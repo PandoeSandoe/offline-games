@@ -1,0 +1,750 @@
+<html><head><base href="https://modernofflinegames.com/"><title>Modern Offline Games Hub</title><style>
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --accent-color: #e74c3c;
+    --background-color: #f5f6fa;
+    --text-color: #2c3e50;
+    --card-background: #ffffff;
+}
+
+body {
+    font-family: 'Roboto', Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s ease;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+h1, h2, h3 {
+    font-weight: 300;
+    color: var(--primary-color);
+}
+
+h1 {
+    font-size: 3em;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.game-card {
+    background-color: var(--card-background);
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.game-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.game-icon {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 20px;
+}
+
+.play-button {
+    background-color: var(--secondary-color);
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 50px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.play-button:hover {
+    background-color: #27ae60;
+    transform: scale(1.05);
+}
+
+.game-container {
+    display: none;
+    margin-top: 40px;
+    background-color: var(--card-background);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.game-board {
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    max-width: 300px;
+}
+
+.cell {
+    width: 100px;
+    height: 100px;
+    border: 2px solid var(--primary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 48px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.cell:hover {
+    background-color: rgba(52, 152, 219, 0.1);
+}
+
+.difficulty-select, .opponent-select {
+    margin: 20px 0;
+}
+
+select, button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid var(--primary-color);
+    background-color: white;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+select:hover, button:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+#snake-canvas, #memory-game, #uno-game {
+    border: 2px solid var(--primary-color);
+    border-radius: 15px;
+    margin: 0 auto;
+    display: block;
+}
+
+.card {
+    width: 70px;
+    height: 100px;
+    background-color: white;
+    border: 2px solid var(--text-color);
+    border-radius: 10px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.red { background-color: #ff6b6b; color: white; }
+.blue { background-color: #4834d4; color: white; }
+.green { background-color: #6ab04c; color: white; }
+.yellow { background-color: #f9ca24; color: black; }
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --primary-color: #3498db;
+        --secondary-color: #2ecc71;
+        --accent-color: #e74c3c;
+        --background-color: #2c3e50;
+        --text-color: #ecf0f1;
+        --card-background: #34495e;
+    }
+
+    .cell {
+        border-color: var(--text-color);
+    }
+
+    .cell:hover {
+        background-color: rgba(236, 240, 241, 0.1);
+    }
+
+    select, button {
+        background-color: var(--card-background);
+        color: var(--text-color);
+    }
+
+    select:hover, button:hover {
+        background-color: var(--primary-color);
+    }
+}
+</style></head><body>
+<div class="container">
+    <h1>Modern Offline Games Hub</h1>
+    <div class="game-grid">
+        <div class="game-card">
+            <svg class="game-icon" viewBox="0 0 100 100">
+                <rect x="10" y="10" width="80" height="80" fill="var(--primary-color)"/>
+                <line x1="33" y1="20" x2="33" y2="80" stroke="white" stroke-width="5"/>
+                <line x1="66" y1="20" x2="66" y2="80" stroke="white" stroke-width="5"/>
+                <line x1="20" y1="33" x2="80" y2="33" stroke="white" stroke-width="5"/>
+                <line x1="20" y1="66" x2="80" y2="66" stroke="white" stroke-width="5"/>
+            </svg>
+            <h3>Tic Tac Toe</h3>
+            <button class="play-button" onclick="showGame('tictactoe')">Play</button>
+        </div>
+        <div class="game-card">
+            <svg class="game-icon" viewBox="0 0 100 100">
+                <rect x="10" y="10" width="80" height="80" fill="var(--secondary-color)"/>
+                <path d="M30 70 L30 30 L70 30 L70 70 L50 50 Z" fill="white"/>
+            </svg>
+            <h3>Snake</h3>
+            <button class="play-button" onclick="showGame('snake')">Play</button>
+        </div>
+        <div class="game-card">
+            <svg class="game-icon" viewBox="0 0 100 100">
+                <rect x="10" y="10" width="80" height="80" fill="var(--accent-color)"/>
+                <rect x="20" y="20" width="25" height="25" fill="white"/>
+                <rect x="55" y="20" width="25" height="25" fill="white"/>
+                <rect x="20" y="55" width="25" height="25" fill="white"/>
+                <rect x="55" y="55" width="25" height="25" fill="white"/>
+            </svg>
+            <h3>Memory Game</h3>
+            <button class="play-button" onclick="showGame('memory')">Play</button>
+        </div>
+        <div class="game-card">
+            <svg class="game-icon" viewBox="0 0 100 100">
+                <rect x="10" y="10" width="80" height="80" fill="#f39c12"/>
+                <text x="50" y="60" font-size="40" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-weight="bold">UNO</text>
+            </svg>
+            <h3>UNO</h3>
+            <button class="play-button" onclick="showGame('uno')">Play</button>
+        </div>
+    </div>
+    
+    <div id="tictactoe-game" class="game-container">
+        <h2>Tic Tac Toe</h2>
+        <div class="difficulty-select">
+            <label>Difficulty: </label>
+            <select id="ttt-difficulty">
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+        </div>
+        <div class="opponent-select">
+            <label>Opponent: </label>
+            <select id="ttt-opponent">
+                <option value="bot">Bot</option>
+                <option value="friend">Friend</option>
+            </select>
+        </div>
+        <div class="game-board">
+            <div class="cell" onclick="makeMove(0)"></div>
+            <div class="cell" onclick="makeMove(1)"></div>
+            <div class="cell" onclick="makeMove(2)"></div>
+            <div class="cell" onclick="makeMove(3)"></div>
+            <div class="cell" onclick="makeMove(4)"></div>
+            <div class="cell" onclick="makeMove(5)"></div>
+            <div class="cell" onclick="makeMove(6)"></div>
+            <div class="cell" onclick="makeMove(7)"></div>
+            <div class="cell" onclick="makeMove(8)"></div>
+        </div>
+        <button onclick="resetTicTacToe()">Reset</button>
+    </div>
+
+    <div id="snake-game" class="game-container">
+        <h2>Snake</h2>
+        <div class="difficulty-select">
+            <label>Difficulty: </label>
+            <select id="snake-difficulty" onchange="updateSnakeSpeed()">
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+        </div>
+        <canvas id="snake-canvas" width="400" height="400"></canvas>
+        <br>
+        <button onclick="startSnakeGame()">Start</button>
+    </div>
+
+    <div id="memory-game" class="game-container">
+        <h2>Memory Game</h2>
+        <div class="difficulty-select">
+            <label>Difficulty: </label>
+            <select id="memory-difficulty" onchange="setupMemoryGame()">
+                <option value="easy">Easy (4x4)</option>
+                <option value="medium">Medium (6x6)</option>
+                <option value="hard">Hard (8x8)</option>
+            </select>
+        </div>
+        <div id="memory-board"></div>
+        <button onclick="setupMemoryGame()">New Game</button>
+    </div>
+
+    <div id="uno-game" class="game-container">
+        <h2>UNO</h2>
+        <div class="opponent-select">
+            <label>Opponent: </label>
+            <select id="uno-opponent">
+                <option value="bot">Bot</option>
+                <option value="friend">Friend</option>
+            </select>
+        </div>
+        <div id="uno-board">
+            <div id="opponent-hand"></div>
+            <div id="discard-pile"></div>
+            <div id="player-hand"></div>
+        </div>
+        <button onclick="startUnoGame()">New Game</button>
+    </div>
+</div>
+
+<script>
+let currentGame = '';
+let tictactoeBoard = ['', '', '', '', '', '', '', '', ''];
+let currentPlayer = 'X';
+let snakeGame, memoryGame, unoGame;
+
+function showGame(game) {
+    currentGame = game;
+    document.querySelectorAll('.game-container').forEach(container => container.style.display = 'none');
+    document.getElementById(`${game}-game`).style.display = 'block';
+    
+    if (game === 'tictactoe') {
+        resetTicTacToe();
+    } else if (game === 'snake') {
+        setupSnakeGame();
+    } else if (game === 'memory') {
+        setupMemoryGame();
+    } else if (game === 'uno') {
+        setupUnoGame();
+    }
+}
+
+// Tic Tac Toe
+function makeMove(index) {
+    if (tictactoeBoard[index] === '' && !checkWinner()) {
+        tictactoeBoard[index] = currentPlayer;
+        document.getElementsByClassName('cell')[index].innerText = currentPlayer;
+        if (checkWinner()) {
+            alert(`${currentPlayer} wins!`);
+        } else if (!tictactoeBoard.includes('')) {
+            alert("It's a draw!");
+        } else {
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            if (document.getElementById('ttt-opponent').value === 'bot' && currentPlayer === 'O') {
+                setTimeout(botMove, 500);
+            }
+        }
+    }
+}
+
+function botMove() {
+    const difficulty = document.getElementById('ttt-difficulty').value;
+    let move;
+    
+    if (difficulty === 'easy') {
+        move = getRandomEmptyCell();
+    } else if (difficulty === 'medium') {
+        move = Math.random() < 0.5 ? getBestMove() : getRandomEmptyCell();
+    } else {
+        move = getBestMove();
+    }
+    
+    makeMove(move);
+}
+
+function getRandomEmptyCell() {
+    const emptyCells = tictactoeBoard.reduce((acc, cell, index) => {
+        if (cell === '') acc.push(index);
+        return acc;
+    }, []);
+    return emptyCells[Math.floor(Math.random() * emptyCells.length)];
+}
+
+function getBestMove() {
+    let bestScore = -Infinity;
+    let bestMove;
+    for (let i = 0; i < 9; i++) {
+        if (tictactoeBoard[i] === '') {
+            tictactoeBoard[i] = 'O';
+            let score = minimax(tictactoeBoard, 0, false);
+            tictactoeBoard[i] = '';
+            if (score > bestScore) {
+                bestScore = score;
+                bestMove = i;
+            }
+        }
+    }
+    return bestMove;
+}
+
+function minimax(board, depth, isMaximizing) {
+    if (checkWinner() === 'O') return 10 - depth;
+    if (checkWinner() === 'X') return depth - 10;
+    if (!board.includes('')) return 0;
+
+    if (isMaximizing) {
+        let bestScore = -Infinity;
+        for (let i = 0; i < 9; i++) {
+            if (board[i] === '') {
+                board[i] = 'O';
+                let score = minimax(board, depth + 1, false);
+                board[i] = '';
+                bestScore = Math.max(score, bestScore);
+            }
+        }
+        return bestScore;
+    } else {
+        let bestScore = Infinity;
+        for (let i = 0; i < 9; i++) {
+            if (board[i] === '') {
+                board[i] = 'X';
+                let score = minimax(board, depth + 1, true);
+                board[i] = '';
+                bestScore = Math.min(score, bestScore);
+            }
+        }
+        return bestScore;
+    }
+}
+
+function checkWinner() {
+    const winPatterns = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+    ];
+
+    for (let pattern of winPatterns) {
+        const [a, b, c] = pattern;
+        if (tictactoeBoard[a] && tictactoeBoard[a] === tictactoeBoard[b] && tictactoeBoard[a] === tictactoeBoard[c]) {
+            return tictactoeBoard[a];
+        }
+    }
+    return null;
+}
+
+function resetTicTacToe() {
+    tictactoeBoard = ['', '', '', '', '', '', '', '', ''];
+    currentPlayer = 'X';
+    document.querySelectorAll('.cell').forEach(cell => cell.innerText = '');
+}
+
+// Snake Game
+function setupSnakeGame() {
+    const canvas = document.getElementById('snake-canvas');
+    const ctx = canvas.getContext('2d');
+    const scale = 20;
+    const rows = canvas.height / scale;
+    const columns = canvas.width / scale;
+
+    let snake;
+
+    (function setup() {
+        snake = new Snake();
+        fruit = new Fruit();
+        fruit.pickLocation();
+
+        window.setInterval(() => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            fruit.draw();
+            snake.update();
+            snake.draw();
+
+            if (snake.eat(fruit)) {
+                fruit.pickLocation();
+            }
+
+            snake.checkCollision();
+        }, 250);
+    }());
+
+    window.addEventListener('keydown', ((evt) => {
+        const direction = evt.key.replace('Arrow', '');
+        snake.changeDirection(direction);
+    }));
+
+    function Snake() {
+        this.x = 0;
+        this.y = 0;
+        this.xSpeed = scale * 1;
+        this.ySpeed = 0;
+        this.total = 0;
+        this.tail = [];
+
+        this.draw = function() {
+            ctx.fillStyle = "#2ecc71";
+            for (let i=0; i<this.tail.length; i++) {
+                ctx.fillRect(this.tail[i].x, this.tail[i].y, scale, scale);
+            }
+
+            ctx.fillRect(this.x, this.y, scale, scale);
+        }
+
+        this.update = function() {
+            for (let i=0; i<this.tail.length - 1; i++) {
+                this.tail[i] = this.tail[i+1];
+            }
+
+            this.tail[this.total - 1] = { x: this.x, y: this.y };
+
+            this.x += this.xSpeed;
+            this.y += this.ySpeed;
+
+            if (this.x > canvas.width) {
+                this.x = 0;
+            }
+
+            if (this.y > canvas.height) {
+                this.y = 0;
+            }
+
+            if (this.x < 0) {
+                this.x = canvas.width;
+            }
+
+            if (this.y < 0) {
+                this.y = canvas.height;
+            }
+        }
+
+        this.changeDirection = function(direction) {
+            switch(direction) {
+                case 'Up':
+                    this.xSpeed = 0;
+                    this.ySpeed = -scale * 1;
+                    break;
+                case 'Down':
+                    this.xSpeed = 0;
+                    this.ySpeed = scale * 1;
+                    break;
+                case 'Left':
+                    this.xSpeed = -scale * 1;
+                    this.ySpeed = 0;
+                    break;
+                case 'Right':
+                    this.xSpeed = scale * 1;
+                    this.ySpeed = 0;
+                    break;
+            }
+        }
+
+        this.eat = function(fruit) {
+            if (this.x === fruit.x && this.y === fruit.y) {
+                this.total++;
+                return true;
+            }
+            return false;
+        }
+
+        this.checkCollision = function() {
+            for (var i=0; i<this.tail.length; i++) {
+                if (this.x === this.tail[i].x && this.y === this.tail[i].y) {
+                    this.total = 0;
+                    this.tail = [];
+                }
+            }
+        }
+    }
+
+    function Fruit() {
+        this.x;
+        this.y;
+
+        this.pickLocation = function() {
+            this.x = (Math.floor(Math.random() * columns - 1) + 1) * scale;
+            this.y = (Math.floor(Math.random() * rows - 1) + 1) * scale;
+        }
+
+        this.draw = function() {
+            ctx.fillStyle = "#e74c3c";
+            ctx.fillRect(this.x, this.y, scale, scale)
+        }
+    }
+}
+
+function updateSnakeSpeed() {
+    const difficulty = document.getElementById('snake-difficulty').value;
+    let speed;
+    switch (difficulty) {
+        case 'easy':
+            speed = 200;
+            break;
+        case 'medium':
+            speed = 100;
+            break;
+        case 'hard':
+            speed = 50;
+            break;
+    }
+    // Update the snake game speed here
+}
+
+// Memory Game
+function setupMemoryGame() {
+    const difficulty = document.getElementById('memory-difficulty').value;
+    let size;
+    switch (difficulty) {
+        case 'easy':
+            size = 4;
+            break;
+        case 'medium':
+            size = 6;
+            break;
+        case 'hard':
+            size = 8;
+            break;
+    }
+    
+    const board = document.getElementById('memory-board');
+    board.innerHTML = '';
+    board.style.width = `${size * 70}px`;
+    board.style.height = `${size * 70}px`;
+    board.style.display = 'grid';
+    board.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+    board.style.gap = '10px';
+    
+    const cards = [];
+    for (let i = 0; i < (size * size) / 2; i++) {
+        cards.push(i + 1, i + 1);
+    }
+    shuffleArray(cards);
+    
+    for (let i = 0; i < size * size; i++) {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.dataset.value = cards[i];
+        card.onclick = flipCard;
+        board.appendChild(card);
+    }
+}
+
+function flipCard() {
+    if (this.innerHTML !== '' || document.querySelectorAll('.flipped').length === 2) return;
+    
+    this.innerHTML = this.dataset.value;
+    this.classList.add('flipped');
+    
+    const flippedCards = document.querySelectorAll('.flipped');
+    if (flippedCards.length === 2) {
+        setTimeout(() => {
+            if (flippedCards[0].innerHTML === flippedCards[1].innerHTML) {
+                flippedCards.forEach(card => card.classList.add('matched'));
+            }
+            flippedCards.forEach(card => {
+                card.classList.remove('flipped');
+                if (!card.classList.contains('matched')) {
+                    card.innerHTML = '';
+                }
+            });
+        }, 1000);
+    }
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+// UNO Game
+function setupUnoGame() {
+    const colors = ['red', 'blue', 'green', 'yellow'];
+    const values = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'Skip', 'Reverse', 'Draw Two'];
+    const deck = [];
+
+    for (let color of colors) {
+        for (let value of values) {
+            deck.push({ color, value });
+            if (value !== '0') {
+                deck.push({ color, value });
+            }
+        }
+    }
+
+    // Add Wild cards
+    for (let i = 0; i < 4; i++) {
+        deck.push({ color: 'black', value: 'Wild' });
+        deck.push({ color: 'black', value: 'Wild Draw Four' });
+    }
+
+    shuffleArray(deck);
+
+    const playerHand = deck.splice(0, 7);
+    const opponentHand = deck.splice(0, 7);
+    const discardPile = [deck.pop()];
+
+    renderUnoGame(playerHand, opponentHand.length, discardPile[0]);
+}
+
+function renderUnoGame(playerHand, opponentHandSize, topCard) {
+    const playerHandElem = document.getElementById('player-hand');
+    const opponentHandElem = document.getElementById('opponent-hand');
+    const discardPileElem = document.getElementById('discard-pile');
+
+    playerHandElem.innerHTML = '';
+    opponentHandElem.innerHTML = '';
+    discardPileElem.innerHTML = '';
+
+    playerHand.forEach(card => {
+        const cardElem = document.createElement('div');
+        cardElem.className = `card ${card.color}`;
+        cardElem.innerText = card.value;
+        cardElem.onclick = () => playCard(card);
+        playerHandElem.appendChild(cardElem);
+    });
+
+    for (let i = 0; i < opponentHandSize; i++) {
+        const cardElem = document.createElement('div');
+        cardElem.className = 'card';
+        cardElem.innerText = 'UNO';
+        opponentHandElem.appendChild(cardElem);
+    }
+
+    const topCardElem = document.createElement('div');
+    topCardElem.className = `card ${topCard.color}`;
+    topCardElem.innerText = topCard.value;
+    discardPileElem.appendChild(topCardElem);
+}
+
+function playCard(card) {
+    // Implement card playing logic here
+    console.log(`Playing card: ${card.color} ${card.value}`);
+}
+
+function startUnoGame() {
+    setupUnoGame();
+}
+
+// Service Worker Registration
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        }, function(err) {
+            console.log('ServiceWorker registration failed: ', err);
+        });
+    });
+}
+</script>
+
+</body></html>
